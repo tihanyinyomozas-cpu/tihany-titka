@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bertalan deák kihívása - Tihanyi Nyomozás</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --parchment: #F5EAD8;
+  --parchment-dark: #E8D5B5;
+  --parchment-mid: #EDD9B8;
+  --ink: #1A1208;
+  --ink-soft: #2C1810;
+  --ink-mid: #3D2415;
+  --gold: #B8860B;
+  --gold-light: #D4A843;
+  --gold-dim: rgba(184,134,11,0.25);
+  --red: #8B2020;
+  --red-light: #A83030;
+  --shadow: rgba(26,18,8,0.45);
+  --shadow-light: rgba(26,18,8,0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ink);
+  min-height: 100vh;
+  font-family: 'Lora', Georgia, serif;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px 72px;
+}
+
+/* ========================
+   SCREENS
+======================== */
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+  animation: screenIn 0.45s ease forwards;
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================
+   PAGE HEADER
+======================== */
+
+.page-header {
+  text-align: center;
+  padding: 40px 0 24px;
+}
+
+.badge {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 4px 14px;
+  margin-bottom: 18px;
+}
+
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--parchment);
+  line-height: 1.15;
+  margin-bottom: 10px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #8a7a62;
+  font-style: italic;
+  letter-spacing: 0.5px;
+}
+
+/* ========================
+   STATION HEADER
+======================== */
+
+.station-header {
+  padding: 32px 0 18px;
+}
+
+.station-label {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.station-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--parchment);
+  line-height: 1.2;
+}
+
+/* ========================
+   PROGRESS DOTS
+======================== */
+
+.progress-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0 20px;
+}
+
+.progress-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3a2e22;
+  transition: background 0.4s ease, transform 0.3s ease;
+}
+
+.progress-dot.active {
+  background: var(--gold);
+  transform: scale(1.3);
+}
+
+.progress-dot.done {
+  background: var(--gold-light);
+}
+
+/* ========================
+   PARCHMENT CARD
+======================== */
+
+.card {
+  background: var(--parchment);
+  position: relative;
+  padding: 24px 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 24px var(--shadow);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 5px; left: 5px; right: 5px; bottom: 5px;
+  border: 1px solid var(--gold-dim);
+  pointer-events: none;
+}
+
+.card p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.card p:last-child { margin-bottom: 0; }
+
+/* ========================
+   BERTALAN BLOCK
+======================== */
+
+.bertalan-block {
+  background: var(--ink-soft);
+  border-left: 3px solid var(--gold);
+  padding: 20px 18px;
+  margin-bottom: 14px;
+  position: relative;
+}
+
+.bertalan-eyebrow {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.bertalan-body {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--parchment-dark);
+  font-style: italic;
+}
+
+.bertalan-body p { margin-bottom: 10px; }
+.bertalan-body p:last-child { margin-bottom: 0; }
+
+/* ========================
+   QUESTION CARD
+======================== */
+
+.question-card {
+  background: var(--parchment);
+  padding: 18px 18px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 14px var(--shadow-light);
+  position: relative;
+}
+
+.question-card::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px; right: 4px; bottom: 4px;
+  border: 1px solid var(--gold-dim);
+  pointer-events: none;
+}
+
+.answeredby-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  margin-bottom: 12px;
+}
+
+.answeredby-tag.laura {
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+.answeredby-tag.peter {
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+}
+
+.question-text {
+  font-family: 'Lora', serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+/* ========================
+   OPTIONS
+======================== */
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 11px 13px;
+  background: var(--parchment-mid);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.1s ease;
+  user-select: none;
+  min-height: 46px;
+  position: relative;
+}
+
+.option:active { transform: scale(0.985); }
+
+.option.selected {
+  background: var(--ink);
+  border-color: var(--ink-mid);
+}
+
+.option.selected .opt-letter {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.option.selected .opt-text {
+  color: var(--parchment);
+}
+
+.opt-letter {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(26,18,8,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  margin-top: 1px;
+}
+
+.opt-text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink);
+  transition: color 0.18s;
+}
+
+/* ========================
+   ERROR BANNER
+======================== */
+
+.error-banner {
+  display: none;
+  background: var(--red);
+  color: var(--parchment);
+  padding: 14px 16px;
+  font-family: 'Lora', serif;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.55;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.error-banner.show {
+  display: block;
+  animation: shake 0.38s ease;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  22%      { transform: translateX(-7px); }
+  66%      { transform: translateX(7px); }
+}
+
+/* ========================
+   BUTTONS
+======================== */
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 15px 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.18s ease, transform 0.1s ease, opacity 0.18s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn-gold:hover { background: var(--gold-light); }
+.btn-gold:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+.btn-red {
+  background: var(--red);
+  color: var(--parchment);
+}
+
+.btn-red:hover { background: var(--red-light); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--parchment-dark);
+  border: 1px solid #4a3a28;
+  margin-top: 10px;
+}
+
+.btn-outline:hover { border-color: var(--gold-dim); }
+
+.btn-area {
+  margin-top: 16px;
+}
+
+/* ========================
+   SUCCESS CARD
+======================== */
+
+.success-card {
+  background: var(--parchment);
+  padding: 32px 22px;
+  text-align: center;
+  box-shadow: 0 8px 36px var(--shadow);
+  position: relative;
+  margin-top: 8px;
+}
+
+.success-card::before {
+  content: '';
+  position: absolute;
+  top: 5px; left: 5px; right: 5px; bottom: 5px;
+  border: 1px solid rgba(184,134,11,0.3);
+  pointer-events: none;
+}
+
+.success-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.success-text {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin-bottom: 26px;
+}
+
+.code-block {
+  background: var(--ink);
+  color: var(--gold);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 7px;
+  padding: 16px 24px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.code-hint {
+  font-size: 12px;
+  color: #9a8a72;
+  font-style: italic;
+  margin-bottom: 24px;
+  display: block;
+  letter-spacing: 0.3px;
+}
+
+/* ========================
+   ORNAMENT DIVIDER
+======================== */
+
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 22px;
+  opacity: 0.35;
+}
+
+.ornament::before, .ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gold);
+}
+
+.ornament span {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  color: var(--gold);
+}
+
+/* ========================
+   FINAL SCREEN
+======================== */
+
+.final-message {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--parchment);
+  text-align: center;
+  line-height: 1.5;
+  padding: 40px 20px;
+  letter-spacing: 0.5px;
+  font-style: italic;
+}
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ==============================
+       SCREEN: INTRO
+  ============================== -->
+  <div class="screen active" id="screen-intro">
+
+    <div class="page-header" id="intro-header">
+      <div class="badge">Tihanyi Nyomozás</div>
+      <h1 class="page-title">Bertalan deák<br>kihívása</h1>
+      <p class="page-subtitle">Páros kalandjáték &mdash; 4 állomás</p>
+    </div>
+
+    <div class="progress-dots">
+      <div class="progress-dot" id="dot-1"></div>
+      <div class="progress-dot" id="dot-2"></div>
+      <div class="progress-dot" id="dot-3"></div>
+      <div class="progress-dot" id="dot-4"></div>
+    </div>
+
+    <div class="card">
+      <p>Bertalan deák öt próbát hagyott hátra. Minden állomáson bizonyítanotok kell, hogy úgy ismeritek egymást, ahogy ö ismerte Mária Magdolnát.</p>
+      <p>Minden kérdésnél figyeljetek, kinek kell válaszolnia. Ha mindenki helyesen válaszolt, megkapjátok a következö helyszín kódját.</p>
+    </div>
+
+    <div class="btn-area">
+      <button class="btn btn-gold" onclick="startGame()">Játék indítása</button>
+    </div>
+
+  </div>
+
+  <!-- ==============================
+       STATION SCREENS (dynamic)
+  ============================== -->
+  <div id="station-container"></div>
+
+  <!-- ==============================
+       SCREEN: SUCCESS (reused)
+  ============================== -->
+  <div class="screen" id="screen-success">
+
+    <div class="page-header">
+      <div class="badge">Tihanyi Nyomozás</div>
+    </div>
+
+    <div class="progress-dots">
+      <div class="progress-dot" id="sdot-1"></div>
+      <div class="progress-dot" id="sdot-2"></div>
+      <div class="progress-dot" id="sdot-3"></div>
+      <div class="progress-dot" id="sdot-4"></div>
+    </div>
+
+    <div class="success-card">
+      <span class="success-eyebrow">Bertalan jóváhagyja</span>
+      <p class="success-text" id="success-msg"></p>
+
+      <div class="ornament"><span>&#10022;</span></div>
+
+      <span class="code-block" id="success-code"></span>
+      <span class="code-hint">Írd be ezt a kódot Google Maps-be</span>
+
+      <a class="btn btn-red" id="maps-btn" href="#" target="_blank">Megnyitás Maps-ben</a>
+      <button class="btn btn-outline" id="next-btn" onclick="nextStation()">Következö állomás</button>
+    </div>
+
+  </div>
+
+  <!-- ==============================
+       SCREEN: FINAL
+  ============================== -->
+  <div class="screen" id="screen-final">
+    <div class="page-header">
+      <div class="badge">Tihanyi Nyomozás</div>
+    </div>
+    <p class="final-message">Bertalan deák leteszi a tollat.<br>Bizonyítottatok.</p>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ============================================
+   STATION DATA
+============================================ */
+const STATIONS = [
+  {
+    id: 1,
+    label: "1. állomás",
+    name: "Tihanyi Bencés Apátság",
+    bertalanText: [
+      "Bertalan deák negyven éven át élt ezek között a falak között. Másolt, fordított, feljegyzett - de egyetlen sort sem írt soha magáról. Egy asszony kivételével, akit Mária Magdolnának hívtak, és akit csak egyszer látott. Azt írta a krónikájában: aki csak egyszer lát valakit, és mégis tudja, ki az - az már nem idegen.",
+      "Bertalan öt próbát hagyott hátra. Az elsö itt kezdödik - ahol minden kezdödött neki is. Mielött továbbléptek, bizonyítsátok be: ismeritek-e egymást úgy, ahogy az elsö benyomások mögé kell látni."
+    ],
+    successText: "Bertalan deák bólint. Az elsö próbán átmentetek. A következö nyom ott vár, ahol a szó visszajön.",
+    nextCode: "WV8Q+Q9",
+    questions: [
+      {
+        text: "Mit találtál elöször furcsának Péterben, aztán megszerettél?",
+        answeredBy: "Laura",
+        options: [
+          "Maniákus rendszeresség - mindent azonnal a helyére kell rakni",
+          "Ritkán mutatja ki az érzelmeit",
+          "Mindig ragaszkodik az igazához",
+          "Nehezen nyílik meg új emberek elött"
+        ],
+        correct: 0
+      },
+      {
+        text: "Mit gondoltál Lauráról elöször, ami késöbb másnak bizonyult?",
+        answeredBy: "Péter",
+        options: [
+          "Visszafogottnak tünt, de valójában nagyon lelkes",
+          "Szótlannak tünt, de csak nehezen nyílik meg",
+          "Perfekcionistának tünt, de rugalmasabb mint gondoltam",
+          "Önállónak tünt, de igényli a megerösítést"
+        ],
+        correct: 1
+      },
+      {
+        text: "Mit gondoltál Péterröl elöször, ami késöbb másnak bizonyult?",
+        answeredBy: "Laura",
+        options: [
+          "Zárkózottnak gondoltam, de nagyon nyitott tud lenni",
+          "Egoistának gondoltam, de nagy szíve van",
+          "Komolynak gondoltam, de nagyon tud bolondozni",
+          "Határozottnak gondoltam, de sokat kételkedik magában"
+        ],
+        correct: 1
+      },
+      {
+        text: "Mit találtál elöször furcsának Laurában, aztán megszerettél?",
+        answeredBy: "Péter",
+        options: [
+          "Mindenhova korán érkezik, sosem késik",
+          "Nagyon precíz, mindent tökéletesen akar csinálni",
+          "Nehezen kér segítséget, inkább egyedül megold mindent",
+          "Mások érdekeit fontosabbnak tartja a sajátjánál"
+        ],
+        correct: 3
+      }
+    ]
+  },
+  {
+    id: 2,
+    label: "2. állomás",
+    name: "Tihanyi Visszhang",
+    bertalanText: [
+      "Bertalan egyszer eljött ide, és hangosan kimondta Mária Magdolna nevét. A visszhang visszaadta. Azt írta: csak azt érdemes kimondani, ami visszajön. Nem a nagy dolgokat értette ezen - hanem a kis megfigyeléseket. Azt, hogy tudod, mit csinál a másik, amikor fél. Miben szigorúbb magához, mint kellene.",
+      "A mindennapokban rejlik az igazi ismeret. Bizonyítsátok be, hogy figyeltek egymásra."
+    ],
+    successText: "Ismeritek egymás mindennapjait. Bertalan elégedett. A következö nyom a tér szívében vár.",
+    nextCode: "WV7Q+86",
+    questions: [
+      {
+        text: "Miben vagy sokkal szigorúbb önmagadhoz, mint másokhoz? (Laura válasza)",
+        answeredBy: "Laura",
+        options: [
+          "Precizitásban - mindent tökéletesnek kell csinálnom, hibázni tilos",
+          "Idöbeosztásban - mindig pontosnak kell lennem",
+          "Önkifejezésben - nehezen engedem meg magamnak, hogy mások elött hibázzak",
+          "Döntéshozatalban - sokáig mérlegelem, nem engedhetek meg rossz döntést"
+        ],
+        correct: 0
+      },
+      {
+        text: "Miben vagy sokkal szigorúbb önmagadhoz, mint másokhoz? (Péter válasza)",
+        answeredBy: "Péter",
+        options: [
+          "Idögazdálkodásban - nem pazarolhatom az idöt",
+          "Tökéletességre való törekvésben",
+          "Kapcsolatokban - magasabb mércét állítok magamnak",
+          "Munkában - csak a legjobbat fogadom el magamtól"
+        ],
+        correct: 1
+      },
+      {
+        text: "Miben nem kérsz segítséget, pedig jól jönne? (Laura válasza)",
+        answeredBy: "Laura",
+        options: [
+          "IT dolgokban - inkább egy napot elvesztek, mintsem kérjek",
+          "Ha eltévedek - nem vallom be, inkább kitalálom",
+          "Érzelmi dolgokban - inkább magamban dolgozom fel",
+          "Ha nem értek valamit - inkább utánajárok egyedül"
+        ],
+        correct: 0
+      },
+      {
+        text: "Miben nem kérsz segítséget, pedig jól jönne? (Péter válasza)",
+        answeredBy: "Péter",
+        options: [
+          "Ha eltévedek - inkább egyedül kiigazodom",
+          "Nincs ilyen - bátran kérek segítséget",
+          "Érzelmek feldolgozásában - inkább magamban tartom",
+          "Döntéshelyzetekben - nem szívesen kérem ki mások véleményét"
+        ],
+        correct: 1
+      }
+    ]
+  },
+  {
+    id: 3,
+    label: "3. állomás",
+    name: "Mádl Ferenc tér",
+    bertalanText: [
+      "Bertalan egyszer azt írta: az ember önmagát sosem látja tisztán. Ahhoz kell egy másik szem. Mária Magdolnáról tudta - pontosan tudta - miben lát önmaga fölé. És Magdolna ugyanígy látta öt. Nem hízelgésböl. Hanem mert aki szeret, az pontosabban lát.",
+      "Álljatok meg itt, a tér közepén. Nézzetek egymásra - és bizonyítsátok be, hogy látjátok egymást. Nem olyannak, amilyennek a másik látja magát. Hanem olyannak, amilyen valójában."
+    ],
+    successText: "Látjátok egymást. Ez a ritka tudás. Bertalan a csendes tóhoz küld titeket - ott az utolsó próba.",
+    nextCode: "WV4M+26",
+    questions: [
+      {
+        text: "Miben gondolod, hogy Péter jobbnak lát téged, mint amilyennek te látod magad?",
+        answeredBy: "Laura",
+        options: [
+          "A munkámban - a szemléletmódomban",
+          "Az empátiámban - mások megértésében",
+          "Az önfegyelemben - hogy mennyire kitartó vagyok",
+          "A kapcsolatokban - hogyan bánok az emberekkel"
+        ],
+        correct: 0
+      },
+      {
+        text: "Miben gondolod, hogy Laura jobbnak lát téged, mint amilyennek te látod magad?",
+        answeredBy: "Péter",
+        options: [
+          "Humorérzékben - szerinte viccesebb vagyok mint gondolom",
+          "Magabiztosságban - határozottabbnak lát engem",
+          "Türelemben - szerinte sokkal türelmesebb vagyok",
+          "Kreativitásban - többre értékeli mint én magam"
+        ],
+        correct: 1
+      },
+      {
+        text: "Hogyan változott az önképed azóta, hogy együtt vagytok? (Laura válasza)",
+        answeredBy: "Laura",
+        options: [
+          "1-2 dologban értékesebbnek gondolom magam, mint elötte",
+          "Sokkal magabiztosabb lettem, merészebben vállalom magam",
+          "Megtanultam elfogadni a hibáimat",
+          "Jobban tudok kiállni magamért, mint régen"
+        ],
+        correct: 0
+      },
+      {
+        text: "Hogyan változott az önképed azóta, hogy együtt vagytok? (Péter válasza)",
+        answeredBy: "Péter",
+        options: [
+          "Jobban értékelem a saját erösségeimet",
+          "Magabiztosabb lettem a döntéseimben",
+          "Megtanultam, hogy nem kell mindenben tökéletesnek lennem",
+          "Rájöttem, hogy érzelmileg többet kell fejlödnöm mint gondoltam"
+        ],
+        correct: 3
+      }
+    ]
+  },
+  {
+    id: 4,
+    label: "4. állomás",
+    name: "Belső-tó",
+    bertalanText: [
+      "Ez a tó nem folyik sehova. Nincs bejárata, nincs kijárata - mégis él, mégis megmarad. Bertalan ide jött, amikor a levelet írta. Azt mondta: amit itt leírok, az nem megy sehova. De megmarad.",
+      "A levél utolsó darabja a legmagasabb ponton vár. De elötte Bertalan egy utolsó kérdést tesz fel - a legnehezebbet. Nem arról, amit tudtok egymásról. Arról, amit egymásnak adtatok."
+    ],
+    successText: "Bertalan deák leteszi a tollat. Bizonyítottatok. A levél utolsó darabja a legmagasabb ponton vár.",
+    nextCode: "WV64+V9",
+    questions: [
+      {
+        text: "Mi gyöz meg, hogy Péter mellett maradj, amikor elbizonytalanodsz?",
+        answeredBy: "Laura",
+        options: [
+          "Az, hogy mennyire szeretem - nem tudnám és nem is akarnám más mellett elképzelni magam",
+          "Az, hogy mindig megtaláljuk egymást, bármi után",
+          "Az, hogy jobban ismer mindenkinél",
+          "Az, hogy a nehéz pillanatokban is ott van"
+        ],
+        correct: 0
+      },
+      {
+        text: "Mi gyöz meg, hogy Laura mellett maradj, amikor elbizonytalanodsz?",
+        answeredBy: "Péter",
+        options: [
+          "Az érzés, hogy mellette vagyok a legjobb verzióm",
+          "Nehéz dolgokon mentünk már át - és mindig képesek voltunk leküzdeni",
+          "Az, hogy jobban ismer mindenkinél",
+          "Az, hogy megnevetteti egymást a legnehezebb pillanatban is"
+        ],
+        correct: 1
+      },
+      {
+        text: "Miben lettél jobb ember azóta, hogy együtt vagytok? (Laura válasza)",
+        answeredBy: "Laura",
+        options: [
+          "Türelmesebb lettem, kevesebbet aggódom a hibáimon",
+          "Megtanultam, hogy a kapcsolatért harcolni kell",
+          "Elfogadóbb lettem - magammal és másokkal is. Jobban szeretek adni, mint kapni",
+          "Bátrabb lettem, merek kiállni magamért"
+        ],
+        correct: 2
+      },
+      {
+        text: "Miben lettél jobb ember azóta, hogy együtt vagytok? (Péter válasza)",
+        answeredBy: "Péter",
+        options: [
+          "Megtanultam, hogyan kommunikáljak nehéz helyzetekben",
+          "Türelmesebb lettem, kevesebbet akarok azonnal megoldani",
+          "Jobban hallgatom meg a másikat, mielött reagálok",
+          "Napról napra kiegyensúlyozottabb vagyok - megtanultam harcolni a kapcsolatért"
+        ],
+        correct: 3
+      }
+    ]
+  }
+];
+
+/* ============================================
+   STATE
+============================================ */
+let state = { currentStation: 0, completedStations: [] };
+const selected = {}; // "stationId-qi" -> optionIndex
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('tihany-titka');
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+}
+
+function saveState() {
+  try { localStorage.setItem('tihany-titka', JSON.stringify(state)); } catch(e) {}
+}
+
+/* ============================================
+   SCREEN NAVIGATION
+============================================ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+}
+
+function updateDots(prefix) {
+  [1,2,3,4].forEach(i => {
+    const d = document.getElementById(prefix + i);
+    if (!d) return;
+    d.classList.remove('active','done');
+    if (state.completedStations.includes(i)) d.classList.add('done');
+    else if (i === state.currentStation) d.classList.add('active');
+  });
+}
+
+/* ============================================
+   GAME FLOW
+============================================ */
+function startGame() {
+  state.currentStation = 1;
+  saveState();
+  showStation(1);
+}
+
+function showStation(id) {
+  state.currentStation = id;
+  saveState();
+  renderStation(id);
+  updateDots('dot-');
+  showScreen('screen-station-' + id);
+}
+
+function nextStation() {
+  const next = state.currentStation + 1;
+  if (next > 4) {
+    showScreen('screen-final');
+  } else {
+    showStation(next);
+  }
+}
+
+/* ============================================
+   STATION RENDERING
+============================================ */
+function renderStation(id) {
+  const container = document.getElementById('station-container');
+  const existing = document.getElementById('screen-station-' + id);
+  if (existing) existing.remove();
+
+  const st = STATIONS[id - 1];
+  const letters = ['A','B','C','D'];
+
+  const qHtml = st.questions.map((q, qi) => `
+    <div class="question-card">
+      <span class="answeredby-tag ${q.answeredBy === 'Laura' ? 'laura' : 'peter'}">${q.answeredBy} válaszol</span>
+      <p class="question-text">${q.text}</p>
+      <div class="options">
+        ${q.options.map((opt, oi) => `
+          <div class="option" id="o-${id}-${qi}-${oi}" onclick="pickOption(${id},${qi},${oi})">
+            <div class="opt-letter">${letters[oi]}</div>
+            <div class="opt-text">${opt}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  const div = document.createElement('div');
+  div.className = 'screen';
+  div.id = 'screen-station-' + id;
+  div.innerHTML = `
+    <div class="station-header">
+      <span class="station-label">${st.label}</span>
+      <h2 class="station-title">${st.name}</h2>
+    </div>
+    <div class="bertalan-block">
+      <span class="bertalan-eyebrow">Bertalan deák feljegyzése</span>
+      <div class="bertalan-body">
+        ${st.bertalanText.map(p => `<p>${p}</p>`).join('')}
+      </div>
+    </div>
+    ${qHtml}
+    <div class="error-banner" id="err-${id}">
+      Bertalan deák int: még nem elég. Gondolkozzatok együtt - a válasz köztetek van, nem a fejetetekben.
+    </div>
+    <div class="btn-area">
+      <button class="btn btn-gold" id="sub-${id}" onclick="submitStation(${id})" disabled>Ellenörzés</button>
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+/* ============================================
+   OPTION SELECTION
+============================================ */
+function pickOption(stationId, qi, oi) {
+  const key = `${stationId}-${qi}`;
+  selected[key] = oi;
+
+  // Deselect all in this question
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById(`o-${stationId}-${qi}-${i}`);
+    if (el) el.classList.remove('selected');
+  }
+
+  // Select chosen
+  const chosen = document.getElementById(`o-${stationId}-${qi}-${oi}`);
+  if (chosen) chosen.classList.add('selected');
+
+  // Hide error
+  const err = document.getElementById(`err-${stationId}`);
+  if (err) err.classList.remove('show');
+
+  // Enable submit if all answered
+  const st = STATIONS[stationId - 1];
+  const allDone = st.questions.every((_, i) => selected[`${stationId}-${i}`] !== undefined);
+  const btn = document.getElementById(`sub-${stationId}`);
+  if (btn) btn.disabled = !allDone;
+}
+
+/* ============================================
+   SUBMIT & VALIDATE
+============================================ */
+function submitStation(id) {
+  const st = STATIONS[id - 1];
+  const allCorrect = st.questions.every((q, qi) => selected[`${id}-${qi}`] === q.correct);
+
+  if (allCorrect) {
+    state.completedStations.push(id);
+    saveState();
+    showSuccessScreen(id);
+  } else {
+    const err = document.getElementById(`err-${id}`);
+    if (err) {
+      err.classList.remove('show');
+      void err.offsetWidth;
+      err.classList.add('show');
+    }
+    window.scrollTo(0, 0);
+  }
+}
+
+function showSuccessScreen(id) {
+  const st = STATIONS[id - 1];
+
+  document.getElementById('success-msg').textContent = st.successText;
+  document.getElementById('success-code').textContent = st.nextCode;
+  document.getElementById('maps-btn').href =
+    'https://maps.google.com/?q=' + encodeURIComponent(st.nextCode + ' Tihany');
+
+  const nextBtn = document.getElementById('next-btn');
+  if (id === 4) {
+    nextBtn.style.display = 'none';
+  } else {
+    nextBtn.style.display = 'block';
+  }
+
+  updateDots('sdot-');
+  showScreen('screen-success');
+}
+
+/* ============================================
+   SECRET RESET (tap title 5x)
+============================================ */
+let tapCount = 0, tapTimer = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadState();
+
+  const header = document.getElementById('intro-header');
+  if (header) {
+    header.addEventListener('click', () => {
+      tapCount++;
+      if (tapTimer) clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => tapCount = 0, 2000);
+      if (tapCount >= 5) {
+        tapCount = 0;
+        if (confirm('Visszaállítja a játékot az elejére?')) {
+          localStorage.removeItem('tihany-titka');
+          Object.keys(selected).forEach(k => delete selected[k]);
+          state = { currentStation: 0, completedStations: [] };
+          showScreen('screen-intro');
+          updateDots('dot-');
+        }
+      }
+    });
+  }
+
+  // Resume progress
+  if (state.currentStation >= 1 && state.currentStation <= 4) {
+    updateDots('dot-');
+    showStation(state.currentStation);
+  }
+});
+</script>
+</body>
+</html>
